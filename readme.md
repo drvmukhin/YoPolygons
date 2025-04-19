@@ -49,18 +49,10 @@ This project allows you to convert binary masks into YOLO segmentation label fil
 1. Set the paths for your source folder containing the mask images and specify the destination folder for the label files.
 2. Run the main script:
    ```sh
-   python yolo.py
+   python createe_yolo_lbl.py -v
    ```
    This script will iterate through all the PNG mask files in the source folder, convert them to YOLO format, and save the label files to the destination folder.
-
-### Visualizing Segmentation Masks
-
-The `test_polygon_to_mask_display` function provides a way to visualize the segmentation masks generated from the YOLO label files to verify the conversion.
-
-1. Adjust the paths and run the visualization part in the script:
-   ```sh
-   python yolo.py
-   ```
+   -v parameter executes the `test_polygon_to_mask_display` function provides a way to visualize the segmentation masks generated from the YOLO label files to verify the conversion.
    It will display each mask to visually verify the correctness of the labels.
 
 ## Code Structure
@@ -72,11 +64,12 @@ The `test_polygon_to_mask_display` function provides a way to visualize the segm
 
 ## Example
 
-1. Place your mask images (e.g. mask.png) in the source folder.
-2. Run the script to generate YOLO label files:
+1. Place your mask images (e.g., `mask.png`) in the source folder.
+2. Run the script to generate YOLO label files with an optional `-ep` (`--epsilon_ratio`) parameter to control polygon approximation:
    ```sh
-   python yolo.py
+   python yopolygons/create_yolo_lbl.py -s <source_folder> -ep <epsilon_ratio>
    ```
+   Replace `<source_folder>` with the path to your folder containing the mask images and `<epsilon_ratio>` with a value (default: 0.005) to adjust the level of contour simplification.
 3. The label files will be saved in a `labels` subfolder in the current working directory.
 4. Visualize the output labels to validate the conversion process.
 
