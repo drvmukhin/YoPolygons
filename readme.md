@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project provides a tool for converting segmentation masks generated from a YOLO model (e.g., YOLOv8 or YOLOv11) into YOLO-compatible polygon segmentation labels. The primary goal is to extract contours from binary masks, reduce the number of points using polygon approximation, and normalize the coordinates to create label files suitable for training YOLO segmentation models. The project relies on OpenCV and NumPy for processing.
+This project provides a Python package, `YoPolygons`, for converting segmentation masks generated from a YOLO model (e.g., YOLOv8 or YOLOv11) into YOLO-compatible polygon segmentation labels. The primary goal is to extract contours from binary masks, reduce the number of points using polygon approximation, and normalize the coordinates to create label files suitable for training YOLO segmentation models. The project relies on OpenCV and NumPy for processing.
 
 ## Key Features
 
@@ -16,18 +16,26 @@ This project provides a tool for converting segmentation masks generated from a 
 
 ### Prerequisites
 
-- Python 3.9+
+- Python 3.10+
 - OpenCV
 - NumPy
 
-### Setup
+## Installation
+
+### Install the package:
 
 1. Clone this repository:
    ```sh
-   git clone https://github.com/yourusername/yolo-segmentation-converter.git
-   cd yolo-segmentation-converter
+   git clone https://github.com/drvmukhin/YoPolygons.git
+   cd YoPolygons
    ```
-2. Install the required dependencies:
+
+2. Install the package:
+   ```sh
+   pip install .
+   ```
+
+   Alternatively, you can install the dependencies manually:
    ```sh
    pip install -r requirements.txt
    ```
@@ -41,7 +49,7 @@ This project allows you to convert binary masks into YOLO segmentation label fil
 1. Set the paths for your source folder containing the mask images and specify the destination folder for the label files.
 2. Run the main script:
    ```sh
-   python yolo_segmentation_converter.py
+   python yolo.py
    ```
    This script will iterate through all the PNG mask files in the source folder, convert them to YOLO format, and save the label files to the destination folder.
 
@@ -51,36 +59,34 @@ The `test_polygon_to_mask_display` function provides a way to visualize the segm
 
 1. Adjust the paths and run the visualization part in the script:
    ```sh
-   python yolo_segmentation_converter.py
+   python yolo.py
    ```
    It will display each mask to visually verify the correctness of the labels.
 
 ## Code Structure
 
-- **yolo\_segmentation\_converter.py**: Main script for converting binary masks into YOLO-compatible segmentation labels.
-- **extract\_contours\_from\_mask(mask)**: Extracts contours from a given binary mask.
-- **approximate\_polygon(contour, epsilon\_ratio)**: Simplifies the extracted contour using the Ramer-Douglas-Peucker algorithm.
-- **normalize\_points(points, image\_width, image\_height)**: Normalizes points based on image dimensions.
-- **save\_yolo\_segmentation(output\_file, class\_id, normalized\_points)**: Saves the segmentation in YOLO format.
-- **test\_polygon\_to\_mask\_display(input\_file, image\_width, image\_height)**: Visualizes the YOLO segmentation labels.
+- **yolo.py**: Main script for converting binary masks into YOLO-compatible segmentation labels and visualizing them.
+- **load\_mask\_from\_file(path\_to\_file)**: Loads a binary mask from a PNG file.
+- **mask\_to\_yolo\_segmentation(mask, class\_id, output\_file, epsilon\_ratio)**: Converts a binary mask into YOLO segmentation format and saves it.
+- **test\_polygon\_to\_mask\_display(input\_file, image\_width, image\_height, display\_separately)**: Visualizes YOLO segmentation labels as masks.
 
 ## Example
 
-1. Place your mask images in the source folder (e.g., `salvage_lab`).
+1. Place your mask images (e.g. mask.png) in the source folder.
 2. Run the script to generate YOLO label files:
    ```sh
-   python yolo_segmentation_converter.py
+   python yolo.py
    ```
 3. The label files will be saved in a `labels` subfolder in the current working directory.
 4. Visualize the output labels to validate the conversion process.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## Contact
 
-For any questions or suggestions, please contact [[vmukhin.dev@example.com](mailto\:vmukhin.dev@gmail.com)].
+For any questions or suggestions, please contact [[vmukhin.dev@gmail.com](mailto\:vmukhin.dev@gmail.com)].
 
 
 
