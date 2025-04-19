@@ -1,15 +1,11 @@
 import cv2
 import numpy as np
-import os
-import argparse
-
-from labelme.utils import lblsave
-
 
 def extract_contours_from_mask(mask, min_area=10):
     """
     Extract contours from a binary mask using OpenCV.
     :param min_area: Minimum area of contours to be considered valid.
+    :param mask: Binary mask as a NumPy array.
     """
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     filtered_contours = [contour for contour in contours if cv2.contourArea(contour) > min_area]

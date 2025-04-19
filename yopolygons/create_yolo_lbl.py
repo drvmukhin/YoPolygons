@@ -1,6 +1,6 @@
 import os
 import argparse
-from yopolygons.yolo import (
+from yolo import (
     load_mask_from_file,
     mask_to_yolo_segmentation,
     test_polygon_to_mask_display,
