@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 import os
+import argparse
+
+from labelme.utils import lblsave
 
 
 def extract_contours_from_mask(mask, min_area=10):
@@ -150,61 +153,4 @@ def test_polygon_to_mask_display(input_file, image_width, image_height, display_
         cv2.imshow("Merged Segmentation Mask", mask)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-
-
-if __name__ == "__main__":
-    # Example usage
-
-    # Define source and destination folders depending on the operating system
-    if os.name == 'nt':
-        src_folder = "C:\\Users\\drvmu\\PycharmProjects\\AI\\salvage_lab"
-    else:
-        src_folder = "/volume/vasily/autodistill/predict5"
-    dest_folder = os.path.join(os.getcwd(), "labels")
-
-    # Create destination folder if it doesn't exist
-    if not os.path.exists(dest_folder):
-        os.makedirs(dest_folder)
-
-    # Loop through files in the source folder
-    for file_name in os.listdir(src_folder):
-        if file_name.endswith('.png'):
-            path_to_file = os.path.join(src_folder, file_name)
-
-            # Load the binary mask
-            binary_mask = load_mask_from_file(path_to_file)
-
-            if binary_mask is None:
-                continue
-
-            # Get the dimensions of the image
-
-            output_file = os.path.join(dest_folder, f'{os.path.splitext(file_name)[0]}.txt')
-            class_id = 0  # Replace with actual class ID
-
-            # Convert mask to YOLO segmentation format and save
-            mask_to_yolo_segmentation(binary_mask, class_id, output_file, epsilon_ratio=0.001)
-
-    # Test the polygon to mask display
-    # test_file = os.path.join(dest_folder, 'mask_front_54d6d82fb25c4e9ab505f8045a6f39f9_ful.txt')  # Replace with an actual file name
-    # test_polygon_to_mask_display(test_file, image_width=640, image_height=480)
-    # Test the polygon to mask display for each generated label file
-    for file_name in os.listdir(src_folder):
-        if file_name.endswith('.png'):
-            path_to_file = os.path.join(src_folder, file_name)
-
-            # Load the binary mask to get dimensions
-            binary_mask = load_mask_from_file(path_to_file)
-
-            if binary_mask is None:
-                continue
-
-            image_height, image_width = binary_mask.shape
-            label_file = os.path.join(dest_folder, f'{os.path.splitext(file_name)[0]}.txt')
-
-            # Display the mask from the label file
-            test_polygon_to_mask_display(label_file,
-                                         image_width=image_width,
-                                         image_height=image_height,
-                                         display_separately=False)
 
