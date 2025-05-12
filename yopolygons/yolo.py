@@ -60,6 +60,20 @@ def load_mask_from_file(path_to_file):
         print(f"Error loading mask: {e}")
         return None
 
+def load_img_from_file(path_to_file):
+    """
+    Load an image from a file as an RGB image.
+    :param path_to_file: Path to the image file.
+    :return: RGB image as a NumPy array.
+    """
+    try:
+        img = cv2.imread(path_to_file, cv2.IMREAD_COLOR)
+        if img is None:
+            raise FileNotFoundError(f"Could not load file: {path_to_file}")
+        return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    except Exception as e:
+        print(f"Error loading image: {e}")
+        return None
 
 def mask_to_yolo_segmentation(mask, class_id, output_file, epsilon_ratio=0.001):
     """
@@ -70,7 +84,7 @@ def mask_to_yolo_segmentation(mask, class_id, output_file, epsilon_ratio=0.001):
     :param epsilon_ratio: Approximation parameter for contour reduction.
     """
     # Get the dimensions of the image
-    image_height, image_width = mask.shape
+    image_height, image_width = mask.shape[0:2]
 
     # Step 1: Extract contours
     contours = extract_contours_from_mask(mask)
@@ -89,12 +103,14 @@ def mask_to_yolo_segmentation(mask, class_id, output_file, epsilon_ratio=0.001):
 
 
 
-def test_polygon_to_mask_display(input_file, image_width, image_height, display_separately=True):
+def test_polygon_to_mask_display(input_file, image_width, image_height, display_separately=True, img=None):
     """
     Test function to read polygon from a file, convert it into a segmentation mask, and display it visually.
     :param input_file: Path to the YOLO format file containing polygon points.
     :param image_width: Width of the image.
     :param image_height: Height of the image.
+    :param display_separately: If True, display each polygon separately.
+    :param img: Optional image (numpy array) to overlay the mask on.
     """
     # Load YOLO segmentation points
     try:
@@ -122,8 +138,30 @@ def test_polygon_to_mask_display(input_file, image_width, image_height, display_
             polygon_points_np = np.array([polygon_points], dtype=np.int32)
             cv2.fillPoly(mask, polygon_points_np, 255)
 
-            # Display the mask
-            cv2.imshow("Segmentation Mask", mask)
+            # Display the mask, optionally overlaid on the image
+            if img is not None:
+                # Create a colored overlay for the mask
+                overlay = img.copy()
+                colored_mask = np.zeros_like(overlay)
+                if len(overlay.shape) == 3:  # Color image
+                    print(f"Overlay color image shape: {overlay.shape}")
+                    # Apply a semi-transparent colored overlay
+                    colored_mask[mask == 255] = [0, 0, 255]  # Red color for the mask
+                    overlay = cv2.addWeighted(colored_mask, 0.5, overlay, 1, 0, overlay)
+                    cv2.imshow("Segmentation Overlay", overlay)
+                else:  # Grayscale image
+                    print("Overlay grayscale image")
+                    # Convert grayscale image to BGR for overlay
+                    img_bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+                    # Create colored mask
+                    colored_mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+                    colored_mask[mask == 255] = [0, 0, 255]  # Red color for the mask
+                    # Combine image and mask with transparency
+                    result = cv2.addWeighted(img_bgr, 1, colored_mask, 0.5, 0)
+                    cv2.imshow("Segmentation Overlay", result)
+            else:
+                cv2.imshow("Segmentation Mask", mask)
+
             cv2.waitKey(0)
             cv2.destroyAllWindows()
     else:
@@ -145,8 +183,29 @@ def test_polygon_to_mask_display(input_file, image_width, image_height, display_
             polygon_points_np = np.array([polygon_points], dtype=np.int32)
             cv2.fillPoly(mask, polygon_points_np, 255)
 
-        # Display the merged mask
-        cv2.imshow("Merged Segmentation Mask", mask)
+        # Display the merged mask, optionally overlaid on the image
+        if img is not None:
+            # Create a colored overlay for the mask
+            overlay = img.copy()
+            colored_mask = np.zeros_like(overlay)
+            if len(overlay.shape) == 3:  # Color image
+                print(f"Overlay color image shape: {overlay.shape}")
+                # Apply a semi-transparent colored overlay
+                colored_mask[mask == 255] = [0, 0, 255]  # Red color for the mask
+                overlay = cv2.addWeighted(colored_mask, 0.5, overlay, 1, 0, overlay)
+                cv2.imshow("Segmentation Overlay", overlay)
+            else:  # Grayscale image
+                print("Overlay grayscale image")
+                # Convert grayscale image to BGR for overlay
+                img_bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+                # Create colored mask
+                colored_mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+                colored_mask[mask == 255] = [0, 0, 255]  # Red color for the mask
+                # Combine image and mask with transparency
+                result = cv2.addWeighted(img_bgr, 1, colored_mask, 0.5, 0)
+                cv2.imshow("Segmentation Overlay", result)
+        else:
+            cv2.imshow("Segmentation Mask", mask)
+
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-
