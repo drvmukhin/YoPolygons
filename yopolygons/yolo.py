@@ -70,7 +70,7 @@ def load_img_from_file(path_to_file):
         img = cv2.imread(path_to_file, cv2.IMREAD_COLOR)
         if img is None:
             raise FileNotFoundError(f"Could not load file: {path_to_file}")
-        return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        return img
     except Exception as e:
         print(f"Error loading image: {e}")
         return None
@@ -82,6 +82,7 @@ def mask_to_yolo_segmentation(mask, class_id, output_file, epsilon_ratio=0.001):
     :param class_id: Class ID of the object.
     :param output_file: Output .txt file to save the segmentation.
     :param epsilon_ratio: Approximation parameter for contour reduction.
+    :return: Number of contours processed.
     """
     # Get the dimensions of the image
     image_height, image_width = mask.shape[0:2]
@@ -101,7 +102,7 @@ def mask_to_yolo_segmentation(mask, class_id, output_file, epsilon_ratio=0.001):
             # Step 4: Save to YOLO format
             f.write(f"{class_id} " + " ".join(map(str, normalized_points)) + "\n")
 
-
+    return len(contours)
 
 def test_polygon_to_mask_display(input_file, image_width, image_height, display_separately=True, img=None):
     """
