@@ -81,6 +81,5 @@ This project is licensed under the MIT License.
 
 For any questions or suggestions, please contact [[vmukhin.dev@gmail.com](mailto\:vmukhin.dev@gmail.com)].
 
-
-
-
+## Release Notes
+- v.1.0.2: mask_to_yolo_segmentation returns number of extracted segment contours/polygons.
